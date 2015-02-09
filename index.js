@@ -82,13 +82,14 @@ MS5803.prototype.getCalConstant = function () {
 
   };
 
-MS5803.prototype.read = function() {
+MS5803.prototype.read = function(data) {
     wire.writeBytes(MS5803_D2_512, 0, function(err) {});
     wire.readBytes(MS5803_ADC_READ,3, function(err, res) {
       D2 = (res[0] << 16 | res[1] << 8) | res[2];
       dT = D2 - C5 *  Math.pow(2,8);
       TEMP=Math.floor(2000+dT*C6/Math.pow(2,23))/100;
       console.log("temperature : "+TEMP);
+      data.temp = TEMP;
     });
     wire.writeBytes(MS5803_D1_512, 0, function(err) {});
     wire.readBytes(MS5803_ADC_READ,3, function(err, res) {
@@ -98,6 +99,7 @@ MS5803.prototype.read = function() {
       P = Math.floor((D1 * SENS / Math.pow(2,21) - OFF) / Math.pow(2,15))/10;
 
       console.log("pressure : "+P);
+      data.pressure = P;
     });
   };
 

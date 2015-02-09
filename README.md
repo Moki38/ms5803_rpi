@@ -14,7 +14,7 @@ var ms5803 = require('ms5803_rpi');
 
 var sensor = ms5803({address: 0x76});
 
-sensor.read(function (err, data) {
+sensor.read(function (data) {
   // data is { pressure: 1013.0 , temp: 68.9 }
 });
 
