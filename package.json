@@ -1,0 +1,29 @@
+{
+  "name": "ms5803_rpi",
+  "version": "0.0.1",
+  "description": "A module for the MS5803-14A for the raspberry pi.",
+  "main": "index.js",
+  "dependencies": {
+    "i2c": "*",
+    "async": "~0.2.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Moki38/ms5803_rpi.git"
+  },
+  "keywords": [
+    "ms5803",
+    "ms5803-14a",
+    "raspberry",
+    "pi",
+    "i2c"
+  ],
+  "author": {
+    "name": "Eric van Dijken"
+  },
+  "license": "MIT"
+}
