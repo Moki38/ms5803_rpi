@@ -1,6 +1,6 @@
 {
   "name": "ms5803_rpi",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "A module for the MS5803-14A for the raspberry pi.",
   "main": "index.js",
   "dependencies": {
