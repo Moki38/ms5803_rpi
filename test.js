@@ -1,6 +1,6 @@
 var MS5803 = require('./index.js');
 
-var sensor = new MS5803({address: 0x76});
+var sensor = new MS5803({address: 0x76, device: '/dev/i2c-2'});
 
 var data = {
         temp: 0,
@@ -9,8 +9,8 @@ var data = {
 
 //sensor.scan();
 
-sensor.reset();
+//sensor.reset();
 
-sensor.getCalConstant(); 
+//sensor.getCalConstant(); 
 sensor.read(data);
   console.log(data);

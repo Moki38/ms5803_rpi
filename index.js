@@ -1,8 +1,10 @@
-var async = require('async');
 var i2c = require('i2c');
 
-function MS5803(options) {
-  var wire = new i2c(options.address);
+module.exports = function MS5803(options) {
+
+var wire = new i2c(options.address, {device: options.device}); 
+
+  var sensor = function() {};
 
   var MS5803_RESET     	= 0x1E;
   var MS5803_PROM_BASE	= 0xA0;
@@ -44,23 +46,17 @@ function MS5803(options) {
   var SENS;      // Sensitivity at actual temperature // Sensitivity - float 
   var P;         // Temperature  
 
-MS5803.prototype.scan = function () {
-    wire.scan(function (err, data) {
-      data.forEach(function (item) {
-        console.log(item);
-      });
-    });
-  };
+   
+function usleep(microseconds) {  
+    var start = new Date().getTime();  
+    while (new Date() < (start + microseconds/1000));  
+    return true;  
+}  
 
-MS5803.prototype.testConnection = function() {
-    wire.writeBytes(MS5803_D2_512, 0, function(err) {});
-  };
 
-MS5803.prototype.reset = function () {
+sensor.read = function (data) {
     wire.writeBytes(MS5803_RESET, 0, function(err) {});
-  };
 
-MS5803.prototype.getCalConstant = function () {
     wire.readBytes(MS5803_PROM_C1,2, function(err, res) {
       C1 = (res[0] << 8) | res[1];
     });
@@ -80,10 +76,8 @@ MS5803.prototype.getCalConstant = function () {
       C6 = (res[0] << 8) | res[1];
     });
 
-  };
-
-MS5803.prototype.read = function(data) {
     wire.writeBytes(MS5803_D2_512, 0, function(err) {});
+    usleep(8000);
     wire.readBytes(MS5803_ADC_READ,3, function(err, res) {
       D2 = (res[0] << 16 | res[1] << 8) | res[2];
       dT = D2 - C5 *  Math.pow(2,8);
@@ -91,17 +85,20 @@ MS5803.prototype.read = function(data) {
       console.log("temperature : "+TEMP);
       data.temp = TEMP;
     });
+
+    usleep(8000);
     wire.writeBytes(MS5803_D1_512, 0, function(err) {});
+    usleep(12000);
+
     wire.readBytes(MS5803_ADC_READ,3, function(err, res) {
       D1  = (res[0] << 16 | res[1] << 8) | res[2];
       OFF = C2 * Math.pow(2,16)+(C4*dT)/Math.pow(2,7);
-      SENS= C1 * Math.pow(2,15)+(C3*dT)/Math.pow(2,8);
+      SENS = C1 * Math.pow(2,15)+(C3*dT)/Math.pow(2,8);
       P = Math.floor((D1 * SENS / Math.pow(2,21) - OFF) / Math.pow(2,15))/10;
-
       console.log("pressure : "+P);
       data.pressure = P;
     });
   };
+  return sensor;
 
 };
-module.exports = MS5803;
